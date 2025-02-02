@@ -68,7 +68,7 @@ export async function POST(request : NextRequest){
                         transformation : [
                             { quality : "auto", fetch_format : "mp4" }
                         ],
-                        folder : "SaaS-uploads",
+                        folder : "SaaS-video-uploads",
                     },
                     (error, result) => {
                         if(error) reject(error);
