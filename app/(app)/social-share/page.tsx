@@ -1,87 +1,82 @@
-"use client";
-import { useEffect, useRef, useState } from "react";
-import React from 'react'
+"use client"
+
+import React, {useState, useEffect, useRef} from 'react'
 import { CldImage } from 'next-cloudinary';
 
 const socialFormats = {
-  "Instagram Square (1:1)": { width: 1080, height: 1080, aspectRatio: "1:1" },
-  "Instagram Portrait (4:5)": { width: 1080, height: 1350, aspectRatio: "4:5" },
-  "Twitter Post (16:9)": { width: 1200, height: 675, aspectRatio: "16:9" },
-  "Twitter Header (3:1)": { width: 1500, height: 500, aspectRatio: "3:1" },
-  "Facebook Cover (205:78)": { width: 820, height: 312, aspectRatio: "205:78" },
-};
+    "Instagram Square (1:1)": { width: 1080, height: 1080, aspectRatio: "1:1" },
+    "Instagram Portrait (4:5)": { width: 1080, height: 1350, aspectRatio: "4:5" },
+    "Twitter Post (16:9)": { width: 1200, height: 675, aspectRatio: "16:9" },
+    "Twitter Header (3:1)": { width: 1500, height: 500, aspectRatio: "3:1" },
+    "Facebook Cover (205:78)": { width: 820, height: 312, aspectRatio: "205:78" },
+  };
 
-type socialFormat = keyof typeof socialFormats 
+  type SocialFormat = keyof typeof socialFormats;
 
-export default function SocialShare() {
+  export default function SocialShare() {
+    const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+    const [selectedFormat, setSelectedFormat] = useState<SocialFormat>("Instagram Square (1:1)");
+    const [isUploading, setIsUploading] = useState(false);
+    const [isTransforming, setIsTransforming] = useState(false);
+    const imageRef = useRef<HTMLImageElement>(null);
 
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null)
-  const [selectedFormat, setSelectedFormat] = useState<socialFormat>("Instagram Square (1:1)")
-  const [isUploading, setIsUploading] = useState(false)
-  const [isTransforming, setIsTransforming] = useState(false)
 
-  const imageRef = useRef<HTMLImageElement>(null)
+    useEffect(() => {
+        if(uploadedImage){
+            setIsTransforming(true);
+        }
+    }, [selectedFormat, uploadedImage])
 
-  useEffect(() => {
-    if(uploadedImage){
-      setIsTransforming(true)
-    }
-  }, [selectedFormat, uploadedImage])
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if(!file) return;
+        setIsUploading(true);
+        const formData = new FormData();
+        formData.append("file", file);
 
-  const handleFileUpload = async(e : React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if(!file) return;
-    setIsUploading(true) 
+        try {
+            const response = await fetch("/api/image-upload", {
+                method: "POST",
+                body: formData
+            })
 
-    const formData = new FormData();
-    formData.append("file", file)
+            if(!response.ok) throw new Error("Failed to upload image");
 
-    try {
-      const response = await fetch("/api/image-upload", {
-        method : "POST",
-        body : formData
-      })
+            const data = await response.json();
+            setUploadedImage(data.publicId);
 
-      if(!response.ok){
-        throw new Error("Failed to upload image")
-      }
 
-      const data = await response.json();
-      setUploadedImage(data.public_id)
-      
+        } catch (error) {
+            console.log(error)
+            alert("Failed to upload image");
+        } finally{
+            setIsUploading(false);
+        }
+    };
 
-    } catch (error) {
-      console.log(error);
-      alert("Failed to upload Image")
-      
-    } finally {
-      setIsUploading(false)
-    }
-  }
+    const handleDownload = () => {
+        if(!imageRef.current) return;
 
-  const handleDownload = async() => {
-    if(!imageRef.current) return;
-
-       fetch(imageRef.current.src)
+        fetch(imageRef.current.src)
         .then((response) => response.blob())
         .then((blob) => {
-          const url = window.URL.createObjectURL(blob)
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = `${selectedFormat
-            .replace(/\s+/g, "_")
-            .toLowerCase()}.png`
-          
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(url);
-          document.body.removeChild(link);
+            const url = window.URL.createObjectURL(blob)
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${selectedFormat
+          .replace(/\s+/g, "_")
+          .toLowerCase()}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(link);
         })
-  }
+    }
 
-  return (
-    <div className="container mx-auto p-4 max-w-4xl">
+
+    return (
+        <div className="container mx-auto p-4 max-w-4xl">
           <h1 className="text-3xl font-bold mb-6 text-center">
             Social Media Image Creator
           </h1>
@@ -114,7 +109,7 @@ export default function SocialShare() {
                       className="select select-bordered w-full"
                       value={selectedFormat}
                       onChange={(e) =>
-                        setSelectedFormat(e.target.value as socialFormat)
+                        setSelectedFormat(e.target.value as SocialFormat)
                       }
                     >
                       {Object.keys(socialFormats).map((format) => (
@@ -138,13 +133,13 @@ export default function SocialShare() {
                         height={socialFormats[selectedFormat].height}
                         src={uploadedImage}
                         sizes="100vw"
-                        alt="Transformed Image"
+                        alt="transformed image"
                         crop="fill"
                         aspectRatio={socialFormats[selectedFormat].aspectRatio}
-                        gravity="auto"
+                        gravity='auto'
                         ref={imageRef}
                         onLoad={() => setIsTransforming(false)}
-                      />
+                        />
                     </div>
                   </div>
 
@@ -158,7 +153,5 @@ export default function SocialShare() {
             </div>
           </div>
         </div>
-
-  )
+      );
 }
-
