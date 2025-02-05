@@ -39,7 +39,7 @@ export default function AppLayout({
   };
 
   return (
-    <div className="drawer lg:drawer-open">
+    <div className="drawer lg:drawer-open bg-[#1D232A] rounded-sm">
       <input
         id="sidebar-drawer"
         type="checkbox"
