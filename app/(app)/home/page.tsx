@@ -30,17 +30,18 @@ function Home() {
       fetchVideos()
     }, [fetchVideos])
 
-    const handleDownload = useCallback((url : string, title : string) => {
-        () => {
-              const link = document.createElement("a");
-              link.href = url;
-              link.setAttribute("download", `${title}.mp4`)
-              link.setAttribute("target", `_blank`)
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-        } 
-    }, [])
+    const handleDownload = useCallback((url: string, title: string) => {
+      const modifiedUrl = url.includes("cloudinary.com") ? `${url}.mp4` : url;
+      const link = document.createElement("a");
+      link.href = modifiedUrl;
+      link.setAttribute("download", `${title}.mp4`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+  }, []);
+  
+  
+
 
     if(loading){
       return <div>Loading..........</div>
