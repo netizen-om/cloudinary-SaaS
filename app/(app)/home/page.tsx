@@ -31,7 +31,7 @@ function Home() {
     }, [fetchVideos])
 
     const handleDownload = useCallback((url: string, title: string) => {
-      const modifiedUrl = url.includes("cloudinary.com") ? `${url}.mp4` : url;
+      const modifiedUrl = `${url}?fl_attachment=true&filename=${title}.mp4`;
       const link = document.createElement("a");
       link.href = modifiedUrl;
       link.setAttribute("download", `${title}.mp4`);
@@ -39,7 +39,6 @@ function Home() {
       link.click();
       document.body.removeChild(link);
   }, []);
-  
   
 
 
