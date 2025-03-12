@@ -18,7 +18,7 @@ function Home() {
       } else {
         throw new Error("Unexpected response format")
       }
-    } catch (error : any) {
+    } catch (error : unknown) {
       console.log(error);
       // SetError(error)
     } finally {

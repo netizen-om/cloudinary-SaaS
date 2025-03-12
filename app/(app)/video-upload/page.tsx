@@ -1,6 +1,6 @@
 "use client"
 import axios from 'axios'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
 function VideoUpload() {
@@ -37,7 +37,7 @@ function VideoUpload() {
       if(response.status !== 200){
         throw new Error("Failed to upload Video")
       }
-    } catch (error : any) {
+    } catch (error : unknown) {
       console.log(error);
       alert("Failed to upload Image")
     } finally {
