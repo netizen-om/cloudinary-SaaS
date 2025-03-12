@@ -10,7 +10,7 @@ function VideoUpload() {
   const [description, setDescription] = useState("")
   const [isUploading, setIsUploading] = useState(false)
 
-  const router = useRouter()
+  // const router = useRouter()
 
   //max size is 60 MB
   const MAX_FILE_SIZE = 70 * 1024 * 1024

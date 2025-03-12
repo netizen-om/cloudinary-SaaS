@@ -8,7 +8,7 @@ function Home() {
 
   const [videos, setVideos] = useState<Video[]>([])
   const [loading,setLoading] = useState(true)
-  const [error, SetError] = useState(null)
+  // const [error, SetError] = useState(null)
 
   const fetchVideos = useCallback(async() => {
     try {
@@ -20,7 +20,7 @@ function Home() {
       }
     } catch (error : any) {
       console.log(error);
-      SetError(error)
+      // SetError(error)
     } finally {
       setLoading(false)
     }
