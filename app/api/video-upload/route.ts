@@ -19,6 +19,10 @@ interface CloudinaryUploadResult {
 }
 
 
+export const config = {
+    runtime: "nodejs",
+};
+
 export async function POST(request : NextRequest){
 
     
