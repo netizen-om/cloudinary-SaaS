@@ -25,6 +25,7 @@ export default clerkMiddleware(async(auth, req) => {
     if(userId && isPublicRoute(req) && !isAccessingDashboard){
         return NextResponse.redirect(new URL("/home", req.url))
     }
+    
     //if not logged in
     if(!userId){
         if(!isPublicRoute(req) && !isPublicApiRoute(req)){
