@@ -22,7 +22,17 @@ interface CloudinaryUploadResult {
 export async function POST(request : NextRequest){
 
     
-    const { userId } = await auth()
+    let userId;
+    try {
+        const { userId: authUserId } = await auth();
+        userId = authUserId;
+    } catch (error) {
+        console.error("Auth error:", error);
+        return NextResponse.json(
+            { error: "Authentication failed" },
+            { status: 500 }
+        );
+    }
     
     if(!userId){
         return NextResponse.json(
