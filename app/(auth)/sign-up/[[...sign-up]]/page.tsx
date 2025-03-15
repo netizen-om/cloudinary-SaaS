@@ -40,9 +40,9 @@ export default function SignUp() {
       // Change the UI to show the verification form
       setPendingVerification(true);
       setLoading(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(JSON.stringify(err, null, 2));
-      setError(err.errors?.[0]?.message || 'Something went wrong. Please try again.');
+      setError('Something went wrong. Please try again.');
       setLoading(false);
     }
   };
@@ -77,9 +77,9 @@ export default function SignUp() {
       
       // Redirect to the dashboard or homepage
       router.push('/home');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(JSON.stringify(err, null, 2));
-      setError(err.errors?.[0]?.message || 'Verification failed. Please try again.');
+      setError('Verification failed. Please try again.');
       setLoading(false);
     }
   };
@@ -96,7 +96,7 @@ export default function SignUp() {
         redirectUrl: '/home',
         redirectUrlComplete: '/home',
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(JSON.stringify(err, null, 2));
       setError('Google sign up failed. Please try again.');
     }
@@ -193,7 +193,7 @@ export default function SignUp() {
                   <span className="label-text">Verification Code</span>
                 </label>
                 <p className="text-sm text-gray-500 mb-2">
-                  We've sent a verification code to {email}. Please enter it below.
+                  A verification code has been sent to {email}. Please enter it below.
                 </p>
                 <input
                   type="text"
