@@ -1,7 +1,7 @@
-// app/sign-in/page.jsx
+// app/sign-in/page.tsx
 "use client";
 
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -9,15 +9,15 @@ import Link from "next/link";
 export default function SignIn() {
   const { isLoaded, signIn, setActive } = useSignIn();
   const router = useRouter();
-  const [emailAddress, setEmailAddress] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [emailAddress, setEmailAddress] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   // Handle form submission for email/password sign-in
-  const handleSubmit = async (e : unknown) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!isLoaded) return;
+    if (!isLoaded || !signIn) return;
 
     try {
       setIsLoading(true);
@@ -34,12 +34,12 @@ export default function SignIn() {
         // Set the active session
         await setActive({ session: result.createdSessionId });
         // Redirect to dashboard or home page
-        router.push("/dashboard");
+        router.push("/home");
       } else {
         console.error("Sign-in failed", result);
         setError("Something went wrong. Please try again.");
       }
-    } catch (err : unknown) {
+    } catch (err: any) {
       console.error("Error during sign-in:", err);
       setError(err.errors?.[0]?.message || "Failed to sign in. Please check your credentials.");
     } finally {
@@ -49,7 +49,7 @@ export default function SignIn() {
 
   // Handle OAuth (Google) sign-in
   const signInWithGoogle = async () => {
-    if (!isLoaded) return;
+    if (!isLoaded || !signIn) return;
 
     try {
       setIsLoading(true);
@@ -61,7 +61,7 @@ export default function SignIn() {
         redirectUrl: "/home",
         redirectUrlComplete: "/home"
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error during Google sign-in:", err);
       setError("Failed to initialize Google sign-in.");
       setIsLoading(false);
@@ -88,6 +88,7 @@ export default function SignIn() {
             onClick={signInWithGoogle}
             disabled={isLoading || !isLoaded} 
             className="btn btn-outline mb-4 w-full flex items-center justify-center gap-2"
+            type="button"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
