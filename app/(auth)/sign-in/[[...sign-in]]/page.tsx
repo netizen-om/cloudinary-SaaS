@@ -39,9 +39,9 @@ export default function SignIn() {
         console.error("Sign-in failed", result);
         setError("Something went wrong. Please try again.");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error during sign-in:", err);
-      setError(err.errors?.[0]?.message || "Failed to sign in. Please check your credentials.");
+      setError("Failed to sign in. Please check your credentials.");
     } finally {
       setIsLoading(false);
     }
@@ -61,7 +61,7 @@ export default function SignIn() {
         redirectUrl: "/home",
         redirectUrlComplete: "/home"
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error during Google sign-in:", err);
       setError("Failed to initialize Google sign-in.");
       setIsLoading(false);
@@ -148,7 +148,7 @@ export default function SignIn() {
           </form>
           
           <div className="text-center mt-4">
-            <p>Don't have an account? 
+            <p>Don&lsquo;t have an account? 
               <Link href="/sign-up" className="link link-primary ml-1">
                 Sign up
               </Link>
